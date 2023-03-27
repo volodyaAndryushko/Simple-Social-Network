@@ -2,12 +2,14 @@ from typing import Dict
 
 from flask import g
 
-from src.api.errors import InvalidCredentials
+from src.api.errors import InvalidCredentials, EmailAlreadyTaken
 from src.models.user import User
 from src.repository import user as user_repo
 
 
 def create_new_user(user_data: Dict[str, str]) -> User:
+    if user_repo.get_user_by_email(email=user_data["email"]):
+        raise EmailAlreadyTaken
     new_user = User(email=user_data["email"])
     new_user.hash_password(user_data["password"])
     g.session.add(new_user)

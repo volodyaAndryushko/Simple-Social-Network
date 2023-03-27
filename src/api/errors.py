@@ -17,6 +17,11 @@ class InvalidCredentials(HTTPException):
     data = {"message": "Incorrect credentials.", "error": "invalid_credentials", "result": FAIL}
 
 
+class EmailAlreadyTaken(HTTPException):
+    code = 400
+    data = {"message": "Email already taken.", "error": "email_already_taken", "result": FAIL}
+
+
 class TokenRequired(HTTPException):
     code = 401
     data = {"message": "Token required.", "error": "token_required", "result": FAIL}

@@ -44,15 +44,14 @@ class User(Base):
 
     def as_dict(self, generate_new_token: bool = False):
         # todo: move to DTO class
-        user_dict = {
+        return {
             "id": self.id,
             "email": self.email,
             "created_time": self.created_time,
+            "access_token": self.encode_auth_token(),
             "last_login_time": self.last_login_time,
             "last_request_time": self.last_request_time,
         }
-        user_dict.update(access_token=self.encode_auth_token()) if generate_new_token else None
-        return user_dict
 
 
 def _get_random_str(size=6, chars=ascii_uppercase + digits):
