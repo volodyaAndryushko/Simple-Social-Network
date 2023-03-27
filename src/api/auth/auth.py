@@ -28,5 +28,4 @@ class UserLogin(BaseApi):
             raise ValidationError(errors)
 
         user = user_service.login_user(form_data)
-        response = {"user": user.as_dict(generate_new_token=True), "message": "User logged in."}
-        return response, 200
+        return {"user": user.as_dict(generate_new_token=True), "message": "User logged in."}

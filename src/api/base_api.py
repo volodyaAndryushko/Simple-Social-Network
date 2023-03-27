@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 from functools import wraps
 
 from flask import make_response, request, g
@@ -6,9 +7,9 @@ from flask_restful import Resource
 import jwt
 
 from src.app_conf import CONFIG
-from src.api.errors import TokenRequired
+from src.api.errors import TokenRequired, TokenExpired, UnknownTokenError
 from src.constants import FAIL, SUCCESS
-from src.models.user import User
+from src.managers.user import get_user_by_id
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -60,14 +61,19 @@ class AuthBaseApi(BaseApi):
         if not self.token:
             raise TokenRequired
         else:
-            self.user = self.decode_auth_token()
-            # self.user.last_request_time = datetime.utcnow()  # todo: maybe move to decode_auth_token?
+            self.user_id = self.decode_auth_token()
 
-    def decode_auth_token(self) -> User:
-        payload = jwt.decode(self.token, CONFIG["SECRET_KEY"], algorithms=["HS256"])
-        user_id = payload["sub"]
-        # todo: return get_user_by_id
-        return ...
+    def decode_auth_token(self) -> str:
+        try:
+            payload = jwt.decode(self.token, CONFIG["SECRET_KEY"], algorithms=["HS256"])
+            user_id = payload["sub"]
+            user_obj = get_user_by_id(user_id)
+            user_obj.last_request_time = datetime.utcnow()
+            return user_id
+        except jwt.ExpiredSignatureError:
+            raise TokenExpired
+        except Exception:
+            raise UnknownTokenError
 
 
 class WelcomeUser(BaseApi):
