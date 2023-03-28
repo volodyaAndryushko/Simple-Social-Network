@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Column, DateTime, Integer, String, Text, ForeignKeyConstraint
+from sqlalchemy import Column, DateTime, Integer, String, Text, ForeignKeyConstraint, PrimaryKeyConstraint
 
 from src.app import Base
 
@@ -23,3 +23,20 @@ class Post(Base):
 
     def as_dict(self):
         return dict(id=self.id, title=self.title, content=self.content, created_time=self.created_time)
+
+
+class Like(Base):
+    __tablename__ = "like"
+
+    post_id = Column("post_id", Integer, nullable=False)
+    liked_by_id = Column("liked_by_id", Integer, nullable=False)
+    created_time = Column("created_time", DateTime, default=datetime.utcnow)
+
+    __table_args__ = (
+        PrimaryKeyConstraint("post_id", "liked_by_id", "created_time"),
+        ForeignKeyConstraint(("liked_by_id",), ("user.id",), name="fk_like_liked_by", ondelete="CASCADE"),
+        ForeignKeyConstraint(("post_id",), ("post.id",), name="fk_like_post_id", ondelete="CASCADE"),
+    )
+
+    def __repr__(self):
+        return f"<Like on post #{self.post_id} - by: User #{self.liked_by_id}>"

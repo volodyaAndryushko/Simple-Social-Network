@@ -42,6 +42,11 @@ class UserNotFound(HTTPException):
     data = {"message": "User not found.", "error": "user_not_found", "result": FAIL}
 
 
+class PostNotFound(HTTPException):
+    code = 404
+    data = {"message": "Post not found.", "error": "post_not_found", "result": FAIL}
+
+
 class ServiceUnavailable(HTTPException):
     code = 503
     data = {"message": "Service temporarily unavailable.", "error": "service_down", "result": FAIL}
