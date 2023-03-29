@@ -1,7 +1,8 @@
 import logging
 import requests
 from json import load
-from random import randint
+from random import randint, choice
+from string import ascii_lowercase
 from typing import List
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - [%(levelname)s]: %(message)s')
@@ -15,8 +16,9 @@ def load_config():
         return load(conf)
 
 
-def create_user(index: int):
-    res = requests.post(SSN_BASE_URL + "/sign-up", json={"email": f"test{index}@gmail.com", "password": "qwerty"})
+def create_user():
+    username = ''.join(choice(ascii_lowercase) for i in range(10))
+    res = requests.post(SSN_BASE_URL + "/sign-up", json={"email": f"{username}@gmail.com", "password": "qwerty"})
     user_data = res.json().get("user")
     if not user_data:
         logging.error("User has not been created due to: " + str(res.json()))
@@ -57,8 +59,8 @@ def start():
     config = load_config()
     number_of_users = config["number_of_users"]
     post_ids = []
-    for user_i in range(number_of_users):
-        user_data = create_user(user_i)
+    for _ in range(number_of_users):
+        user_data = create_user()
         if not user_data:
             continue
 
