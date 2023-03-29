@@ -67,7 +67,7 @@ class AuthBaseApi(BaseApi):
         try:
             payload = jwt.decode(self.token, CONFIG["SECRET_KEY"], algorithms=["HS256"])
             user_id = payload["sub"]
-            user_obj = get_user_by_id(user_id)
+            user_obj = get_user_by_id(user_id, return_as_dto=False)
             user_obj.last_request_time = datetime.utcnow()
             return user_id
         except jwt.ExpiredSignatureError:

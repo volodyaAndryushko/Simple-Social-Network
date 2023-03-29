@@ -14,8 +14,8 @@ class UserSignUp(BaseApi):
         if errors:
             raise ValidationError(errors)
 
-        new_user = user_service.create_new_user(form_data)
-        response = {"user": new_user.as_dict(generate_new_token=True), "message": "User created!"}
+        user = user_service.create_new_user(form_data)
+        response = {"user": user.as_dict(), "message": "User created!"}
         return response, 201
 
 
@@ -28,4 +28,4 @@ class UserLogin(BaseApi):
             raise ValidationError(errors)
 
         user = user_service.login_user(form_data)
-        return {"user": user.as_dict(generate_new_token=True), "message": "User logged in."}
+        return {"user": user.as_dict(), "message": "User logged in."}
