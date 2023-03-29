@@ -1,11 +1,6 @@
 {
-  "__GENERAL__": null,
   "DATABASE_URL": "postgresql://user:postgres@0.0.0.0:5432/users",
   "SECRET_KEY": "secret_key123",
-
   "__JWT_EXPIRES_IN": "5 mins",
-  "JWT_EXPIRES_IN": 300,
-
-  "ORIGIN": "*",
-  "ALLOW_HOST": "*"
+  "JWT_EXPIRES_IN": 300
 }
